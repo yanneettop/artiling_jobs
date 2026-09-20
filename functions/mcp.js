@@ -550,7 +550,7 @@ async function callTool(env, actor, name, args) {
 
 export async function onRequestPost({ request, env }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
 
   let message
   try { message = await request.json() } catch { return rpcError(null, -32700, 'Parse error') }

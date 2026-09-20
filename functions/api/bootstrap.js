@@ -3,7 +3,7 @@ import { COLLECTIONS, json } from '../_shared/repository.js'
 
 export async function onRequestPost({ request, env }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
   if (actor.type !== 'human') return json({ error: 'Only a human administrator can bootstrap data' }, 403)
 
   const existing = await env.DB.prepare('SELECT COUNT(*) AS count FROM records').first()

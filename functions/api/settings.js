@@ -3,7 +3,7 @@ import { json } from '../_shared/repository.js'
 
 export async function onRequestPut({ request, env }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
   if (actor.type !== 'human') return json({ error: 'Bots cannot change application settings' }, 403)
   const settings = await request.json()
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) return json({ error: 'Invalid settings' }, 400)

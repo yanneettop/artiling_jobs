@@ -47,9 +47,18 @@ export async function authenticate(request, env) {
   return null
 }
 
-export function unauthorized() {
+// RFC 9728: point unauthenticated clients at the discovery document so they can
+// find the authorization server and register themselves.
+export function unauthorized(request) {
+  let challenge = 'Bearer realm="Artiling Jobs MCP"'
+  try {
+    const { origin } = new URL(request.url)
+    challenge += `, resource_metadata="${origin}/.well-known/oauth-protected-resource"`
+  } catch {
+    // Fall back to the bare challenge when no request URL is available.
+  }
   return Response.json({ error: 'Authentication required' }, {
     status: 401,
-    headers: { 'www-authenticate': 'Bearer realm="Artiling Jobs MCP"' },
+    headers: { 'www-authenticate': challenge },
   })
 }

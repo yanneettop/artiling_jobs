@@ -9,7 +9,7 @@ import {
 
 export async function onRequestGet({ request, env, params }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
   if (!isCollection(params.collection)) return json({ error: 'Unknown collection' }, 404)
   const record = await readRecord(env.DB, params.collection, params.id)
   return record ? json(record) : json({ error: 'Record not found' }, 404)
@@ -17,7 +17,7 @@ export async function onRequestGet({ request, env, params }) {
 
 export async function onRequestPut({ request, env, params }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
   if (!isCollection(params.collection)) return json({ error: 'Unknown collection' }, 404)
   if (actor.type === 'bot' && !BOT_WRITABLE_COLLECTIONS.has(params.collection)) {
     return json({ error: 'Bots cannot write this collection' }, 403)
@@ -34,6 +34,6 @@ export async function onRequestPut({ request, env, params }) {
 
 export async function onRequestDelete({ request, env }) {
   const actor = await authenticate(request, env)
-  if (!actor) return unauthorized()
+  if (!actor) return unauthorized(request)
   return json({ error: 'Deletion is disabled. Archive the record instead.' }, 405)
 }
