@@ -14,5 +14,11 @@
       "database_id": "1b90a73e-0371-464f-9887-819f03d5e360",
       "preview_database_id": "DB"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "DOCUMENTS",
+      "bucket_name": "artiling-jobs-documents"
+    }
   ]
 }

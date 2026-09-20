@@ -28,7 +28,9 @@ npm run build
 - Grok/MCP access requires an encrypted `BOT_API_TOKEN` secret. Never put the value in Git.
 - The current frontend repository remains local-first until the authenticated API migration is
   completed; do not treat browser `localStorage` as shared production data.
-- Connect a private object-storage provider for documents; the UI intentionally stores metadata only.
+- Documents are stored in R2. Create a bucket named `artiling-jobs-documents` and bind it to the
+  Pages project as `DOCUMENTS`; the binding is already declared in `wrangler.jsonc`. Until the
+  bucket exists, uploading returns a 503 that says so.
 - Configure Cloudflare Access before bootstrapping shared production data.
 
 ## Bot integration
@@ -60,6 +62,18 @@ works if it is configured.
 
 If a client only looks for discovery at the site root, add a Cloudflare Access bypass policy for
 `/.well-known/*`; the same documents are already served there.
+
+## Document files
+
+Quotes, drawings and site photos are uploaded from the Documents page and stored in R2 under a
+server-generated key, so an uploaded file name never becomes a path. `/api/files` accepts the
+upload and `/api/files/documents/<key>` serves it back.
+
+Only a signed-in human can upload, read or delete a file; bots have no access to documents, which
+matches the records API. Files are capped at 25MB. Types that can carry script, such as SVG and
+HTML, are refused, and anything the browser should not render is served as a download with
+`nosniff` and a sandboxing `Content-Security-Policy`, so an upload cannot execute in the
+application's origin.
 
 ### Tools
 
