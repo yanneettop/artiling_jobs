@@ -15,6 +15,7 @@ const PROJECT_TYPES = [
 ]
 const WAITING_FOR = ['CLIENT', 'IOANNIS', 'ARTAN', 'SUPPLIER', 'INSTALLATION_TEAM', 'OTHER', 'NOTHING']
 const OWNER_HINTS = ['Ioannis', 'Artan']
+const SERVER_VERSION = '0.3.1'
 const PRIORITIES = ['HIGH', 'NORMAL', 'LOW']
 const TASK_STATUSES = ['TODO', 'IN_PROGRESS', 'WAITING', 'DONE']
 
@@ -561,14 +562,14 @@ export async function onRequestPost({ request, env }) {
     return rpc(message.id, {
       protocolVersion: message.params?.protocolVersion || '2025-11-25',
       capabilities: { tools: {} },
-      serverInfo: { name: 'artiling-jobs', version: '0.3.0' },
+      serverInfo: { name: 'artiling-jobs', version: SERVER_VERSION },
     })
   }
   if (message.method === 'server/discover') {
     return rpc(message.id, {
       protocolVersions: ['2026-07-28', '2025-11-25'],
       capabilities: { tools: {} },
-      serverInfo: { name: 'artiling-jobs', version: '0.3.0' },
+      serverInfo: { name: 'artiling-jobs', version: SERVER_VERSION },
     })
   }
   if (message.method === 'notifications/initialized') return new Response(null, { status: 202 })
@@ -583,6 +584,8 @@ export async function onRequestPost({ request, env }) {
 export async function onRequestGet() {
   return Response.json({
     name: 'Artiling Jobs MCP',
+    version: SERVER_VERSION,
+    tool_count: tools.length,
     transport: 'Streamable HTTP',
     authentication: 'OAuth 2.1 authorization code with PKCE',
   })
