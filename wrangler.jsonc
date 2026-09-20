@@ -14,11 +14,14 @@
       "database_id": "1b90a73e-0371-464f-9887-819f03d5e360",
       "preview_database_id": "DB"
     }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "DOCUMENTS",
-      "bucket_name": "artiling-jobs-documents"
-    }
   ]
+  // Document file storage. Cloudflare validates bindings at deploy time, so this
+  // block can only be added once the bucket exists, otherwise every deploy fails.
+  // Create an R2 bucket named artiling-jobs-documents, then add:
+  //
+  // "r2_buckets": [{ "binding": "DOCUMENTS", "bucket_name": "artiling-jobs-documents" }]
+  //
+  // Until then /api/files answers 503 with an explanation. Bindings must be
+  // declared here rather than in the dashboard, because this file is the source
+  // of truth for the project.
 }
