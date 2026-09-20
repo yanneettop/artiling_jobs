@@ -53,7 +53,8 @@ export function unauthorized(request) {
   let challenge = 'Bearer realm="Artiling Jobs MCP"'
   try {
     const { origin } = new URL(request.url)
-    challenge += `, resource_metadata="${origin}/.well-known/oauth-protected-resource"`
+    // The copy under /mcp/ is the one reachable without a Cloudflare Access login.
+    challenge += `, resource_metadata="${origin}/mcp/.well-known/oauth-protected-resource"`
   } catch {
     // Fall back to the bare challenge when no request URL is available.
   }
