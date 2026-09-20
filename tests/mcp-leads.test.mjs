@@ -69,7 +69,7 @@ test('tools/list exposes the lead and client CRUD tools', async () => {
     }),
   })
   const names = (await response.json()).result.tools.map((tool) => tool.name)
-  for (const expected of ['create_client', 'update_client', 'create_lead', 'update_lead', 'archive_lead', 'list_statuses']) {
+  for (const expected of ['create_client', 'update_client', 'create_lead', 'update_lead', 'archive_lead', 'list_lead_enums']) {
     assert.ok(names.includes(expected), `${expected} missing`)
   }
 })
@@ -89,6 +89,7 @@ test('create_lead with an inline client creates both records with defaults', asy
   assert.equal(created.lead.won_at, null)
   assert.equal(created.client.name, 'Ana Popescu')
   assert.equal(created.lead.client_id, created.client_id)
+  assert.equal(created.lead.client.name, 'Ana Popescu')
   assert.equal(db.activity.filter((row) => row.action === 'CREATED').length, 2)
 })
 
@@ -161,9 +162,9 @@ test('archive_lead hides from search, is reversible, and leaves other records al
   assert.equal((await call('search_leads', { query: 'amelia' })).count, 1)
 })
 
-test('list_statuses documents the allowed values', async () => {
+test('list_lead_enums documents the allowed values', async () => {
   const { call } = harness()
-  const values = await call('list_statuses')
+  const values = await call('list_lead_enums')
   assert.ok(values.status.includes('WAITING_FOR_SAMPLE_FEEDBACK'))
   assert.ok(values.project_type.includes('BESPOKE_PORCELAIN_SINK'))
   assert.ok(values.waiting_for.includes('NOTHING'))

@@ -85,7 +85,7 @@ const tools = [
     },
   },
   {
-    name: 'list_statuses',
+    name: 'list_lead_enums',
     description: 'List the allowed values for lead status, project_type, priority, waiting_for and usual next_action_owner names. Read-only.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
   },
@@ -385,7 +385,7 @@ async function callTool(env, actor, name, args) {
     })
   }
 
-  if (name === 'list_statuses') {
+  if (name === 'list_lead_enums') {
     return toolResult({
       status: LEAD_STATUSES,
       project_type: PROJECT_TYPES,
@@ -459,7 +459,7 @@ async function callTool(env, actor, name, args) {
 
     const client = existingClient ? existingClient.value : (await writeRecord(env.DB, actor, 'clients', newClient(clientFields))).value
     const result = await writeRecord(env.DB, actor, 'leads', newLead(client.id, changes))
-    return toolResult({ lead_id: result.value.id, client_id: client.id, lead: result.value, client })
+    return toolResult({ lead_id: result.value.id, client_id: client.id, lead: { ...result.value, client }, client })
   }
 
   if (name === 'update_lead') {

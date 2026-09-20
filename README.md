@@ -36,7 +36,7 @@ npm run build
 The Streamable HTTP MCP endpoint is `/mcp`. It exposes a deliberately small tool surface:
 
 - `search_leads` and `get_lead` (read; archived leads are hidden unless `include_archived`)
-- `list_statuses` for the allowed status, project type, priority and waiting-for values
+- `list_lead_enums` for the allowed status, project type, priority and waiting-for values
 - `create_client` and `update_client`
 - `create_lead` (existing `client_id` or an inline `client`) and `update_lead`, which covers identity
   fields (title, type, description, source, address, postcode), pipeline fields, contact dates,
