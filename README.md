@@ -33,6 +33,36 @@ npm run build
 
 ## Bot integration
 
+### Connecting a client
+
+Add the connector with the server URL alone — `https://artiling-jobs.pages.dev/mcp` — and sign in
+with Cloudflare Access when prompted. No client id or secret is entered by hand: the client reads
+the discovery documents and registers itself.
+
+Cloudflare Access guards the whole site except `/mcp*` and `/oauth/token`, so the discovery
+documents and the registration endpoint are published under `/mcp/`, and the issuer is the
+resource itself:
+
+| Endpoint | Purpose | Behind Access |
+| --- | --- | --- |
+| `/mcp/.well-known/oauth-protected-resource` | RFC 9728 resource metadata | no |
+| `/mcp/.well-known/oauth-authorization-server` | RFC 8414 server metadata | no |
+| `/mcp/register` | RFC 7591 registration | no |
+| `/oauth/token` | Token exchange | no |
+| `/oauth/authorize` | Human login step | yes, by design |
+
+Registration only issues public PKCE clients whose redirect URIs are already on the `grok.com`
+allow-list, and the redirect is checked again against the registered set when authorizing.
+Registration grants nothing on its own — `/oauth/authorize` still refuses to issue a code without a
+Cloudflare Access login. Registered client ids are signed rather than stored, so there is no
+database migration. The older static `GROK_OAUTH_CLIENT_ID` / `GROK_OAUTH_CLIENT_SECRET` pair still
+works if it is configured.
+
+If a client only looks for discovery at the site root, add a Cloudflare Access bypass policy for
+`/.well-known/*`; the same documents are already served there.
+
+### Tools
+
 The Streamable HTTP MCP endpoint is `/mcp`. It exposes a deliberately small tool surface:
 
 - `search_leads` and `get_lead` (read; archived leads are hidden unless `include_archived`)
