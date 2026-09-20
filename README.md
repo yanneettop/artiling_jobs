@@ -35,10 +35,17 @@ npm run build
 
 The Streamable HTTP MCP endpoint is `/mcp`. It exposes a deliberately small tool surface:
 
-- `search_leads` and `get_lead`
-- `update_lead` for operational fields only
+- `search_leads` and `get_lead` (read; archived leads are hidden unless `include_archived`)
+- `list_statuses` for the allowed status, project type, priority and waiting-for values
+- `create_client` and `update_client`
+- `create_lead` (existing `client_id` or an inline `client`) and `update_lead`, which covers identity
+  fields (title, type, description, source, address, postcode), pipeline fields, contact dates,
+  `won_at`/`lost_at` (nullable) and `lost_reason`
+- `archive_lead` hides a lead from the UI without deleting it; `archived: false` restores it
 - `add_lead_note`
 - `create_task` and `get_overdue_tasks`
 
-Bots cannot delete records or write quotes, payments, jobs, materials, documents, or settings.
-Every write creates an immutable entry in the backend `activity_log` table.
+Unknown or protected fields are rejected with an error rather than ignored. Bots cannot delete
+records or write quotes, payments, jobs, materials, documents, or settings. Archiving a lead does
+not touch its linked quotes, jobs or tasks. Every write creates an immutable entry in the backend
+`activity_log` table.
