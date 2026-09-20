@@ -48,5 +48,8 @@ export async function authenticate(request, env) {
 }
 
 export function unauthorized() {
-  return Response.json({ error: 'Authentication required' }, { status: 401 })
+  return Response.json({ error: 'Authentication required' }, {
+    status: 401,
+    headers: { 'www-authenticate': 'Bearer realm="Artiling Jobs MCP"' },
+  })
 }

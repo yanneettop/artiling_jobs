@@ -270,6 +270,6 @@ export async function onRequestGet() {
   return Response.json({
     name: 'Artiling Jobs MCP',
     transport: 'Streamable HTTP',
-    authentication: 'Bearer token required',
+    authentication: 'OAuth 2.1 authorization code with PKCE',
   })
 }
