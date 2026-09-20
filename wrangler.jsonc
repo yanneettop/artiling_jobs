@@ -3,6 +3,10 @@
   "name": "artiling-jobs",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-09-20",
+  "vars": {
+    "TEAM_DOMAIN": "https://dawn-term-988b.cloudflareaccess.com",
+    "POLICY_AUD": "f623bdeba681df0d84d0631f851e068ebab7b7b93581d9a42b68a4a8d737ff19"
+  },
   "d1_databases": [
     {
       "binding": "DB",
