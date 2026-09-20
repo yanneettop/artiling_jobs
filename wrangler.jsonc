@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "artiling-jobs",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-09-20",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "artiling-jobs-production",
+      "database_id": "1b90a73e-0371-464f-9887-819f03d5e360",
+      "preview_database_id": "DB"
+    }
+  ]
+}

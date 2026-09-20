@@ -21,7 +21,24 @@ npm run build
 
 ## Production setup decisions
 
-- Apply `database/001_phase1_foundation.sql` to a new PostgreSQL database.
-- Replace the local repository provider with authenticated API/database methods.
+- The Cloudflare Phase 2 backend uses the D1 migration in `database/002_cloudflare_d1.sql`.
+- The Pages project expects a D1 binding named `DB`.
+- Human API access requires a cryptographically validated Cloudflare Access JWT. Configure
+  `TEAM_DOMAIN` and `POLICY_AUD` after creating the Access application.
+- Grok/MCP access requires an encrypted `BOT_API_TOKEN` secret. Never put the value in Git.
+- The current frontend repository remains local-first until the authenticated API migration is
+  completed; do not treat browser `localStorage` as shared production data.
 - Connect a private object-storage provider for documents; the UI intentionally stores metadata only.
-- Configure real identity/session handling and enforce the prepared roles server-side.
+- Configure Cloudflare Access before bootstrapping shared production data.
+
+## Bot integration
+
+The Streamable HTTP MCP endpoint is `/mcp`. It exposes a deliberately small tool surface:
+
+- `search_leads` and `get_lead`
+- `update_lead` for operational fields only
+- `add_lead_note`
+- `create_task` and `get_overdue_tasks`
+
+Bots cannot delete records or write quotes, payments, jobs, materials, documents, or settings.
+Every write creates an immutable entry in the backend `activity_log` table.
