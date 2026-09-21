@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Briefcase, CalendarBlank, CaretDown, ClipboardText, Coins, FileText, Gear, House, ListChecks, Package, Quotes, SignOut, UsersThree, X } from '@phosphor-icons/react'
+import { BellRinging, Briefcase, CalendarBlank, CaretDown, ClipboardText, Coins, FileText, Gear, House, ListChecks, Package, Quotes, SignOut, UsersThree, X } from '@phosphor-icons/react'
 
 const nav=[
-  ['Dashboard','/dashboard',House],['Leads','/leads',UsersThree],['Quotes','/quotes',Quotes],['Jobs','/jobs',Briefcase],['Calendar','/calendar',CalendarBlank],['Materials','/materials',Package],['Payments','/payments',Coins],['Tasks','/tasks',ListChecks],['Documents','/documents',FileText],['Settings','/settings',Gear]
+  ['Dashboard','/dashboard',House],['Follow-ups','/follow-ups',BellRinging],['Leads','/leads',UsersThree],['Quotes','/quotes',Quotes],['Jobs','/jobs',Briefcase],['Calendar','/calendar',CalendarBlank],['Materials','/materials',Package],['Payments','/payments',Coins],['Tasks','/tasks',ListChecks],['Documents','/documents',FileText],['Settings','/settings',Gear]
 ] as const
 
 export function Shell({path,children,onLogout}:{path:string;children:ReactNode;onLogout:()=>void}){
