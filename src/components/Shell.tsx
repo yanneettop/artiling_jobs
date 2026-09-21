@@ -11,7 +11,7 @@ export function Shell({path,children,onLogout}:{path:string;children:ReactNode;o
  return <div className="app-shell">
    <a className="skip-link" href="#main">Skip to content</a>
    <aside className={`sidebar ${mobileOpen?'open':''}`}>
-     <div className="brand"><div className="brand-mark">A</div><div><strong>ARTILING</strong><span>JOBS</span></div><button className="mobile-close" onClick={()=>setMobileOpen(false)}><X size={20}/></button></div>
+     <div className="brand"><img className="brand-logo" src="/artiling-bimi-final.svg" alt="Artiling Studio"/><div><strong>ARTILING</strong><span>JOBS</span></div><button className="mobile-close" onClick={()=>setMobileOpen(false)} aria-label="Close navigation"><X size={20}/></button></div>
      <nav>{nav.map(([name,to,Icon])=><a key={to} href={`#${to}`} className={path===to||path.startsWith(`${to}/`)?'active':''}><Icon size={19} weight={path===to||path.startsWith(`${to}/`)?'fill':'regular'}/><span>{name}</span></a>)}</nav>
      <div className="sidebar-foot"><button className="account"><span className="avatar">IK</span><span><strong>Ioannis K.</strong><small>Administrator</small></span><CaretDown size={14}/></button><button className="logout" onClick={onLogout}><SignOut size={17}/>Sign out</button></div>
    </aside>

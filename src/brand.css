@@ -1,0 +1,8 @@
+.brand-logo {
+  display: block;
+  width: 2.85rem;
+  height: 2.85rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+  background: #fff;
+}
