@@ -1,0 +1,53 @@
+.quote-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-bottom: 1.4rem;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.quote-summary > div {
+  min-height: 6.6rem;
+  padding: 1rem 1.1rem;
+  background: var(--paper);
+}
+
+.quote-summary span,
+.quote-summary strong,
+.quote-summary small { display: block; }
+.quote-summary span { font-size: .6rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.quote-summary strong { margin: .45rem 0 .25rem; font: 500 1.45rem/1.1 DM Mono, monospace; }
+.quote-summary small { font-size: .62rem; color: var(--muted); }
+.quote-summary .attention { border-top: 2px solid var(--red); }
+
+.quote-data.quote-center .data-head,
+.quote-data.quote-center .data-row {
+  grid-template-columns: .82fr 1.25fr .62fr .76fr .68fr .78fr .62fr 5.4rem;
+}
+
+.quote-number-link { display: block; }
+.quote-number-link:hover strong { text-decoration: underline; text-underline-offset: .18rem; }
+.quote-row-actions { display: flex; align-items: center; justify-content: flex-end; gap: .22rem; }
+.quote-row-actions a { width: 1.8rem; height: 1.8rem; display: grid; place-items: center; color: #5b675e; transition: background .18s ease, color .18s ease, transform .18s ease; }
+.quote-row-actions a:hover { background: #e4e2db; color: var(--ink); }
+.quote-row-actions a:active { transform: translateY(1px); }
+.quote-row-actions svg { width: .92rem; height: .92rem; }
+.quote-document-name { margin-top: .5rem; max-width: 24rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 1150px) {
+  .quote-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 800px) {
+  .quote-data.quote-center .data-row { grid-template-columns: 1fr 1fr; }
+  .quote-row-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 540px) {
+  .quote-summary { grid-template-columns: 1fr 1fr; margin-left: -.85rem; margin-right: -.85rem; border-left: 0; border-right: 0; }
+  .quote-summary > div { min-height: 6rem; padding: .9rem; }
+  .quote-list article { display: grid; }
+  .quote-actions { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .quote-actions .button { width: 100%; }
+}
