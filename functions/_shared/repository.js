@@ -71,6 +71,22 @@ export async function writeRecord(db, actor, collection, value, expectedVersion 
   return { value: next, version: nextVersion }
 }
 
+export async function deleteRecord(db, actor, collection, id) {
+  const current = await readRecord(db, collection, id)
+  if (!current) return null
+
+  const now = new Date().toISOString()
+  await db.batch([
+    db.prepare('DELETE FROM records WHERE collection = ?1 AND id = ?2').bind(collection, id),
+    db.prepare(`
+      INSERT INTO activity_log
+        (id, actor, actor_type, action, collection, record_id, old_value_json, new_value_json, created_at)
+      VALUES (?1, ?2, ?3, 'DELETED', ?4, ?5, ?6, NULL, ?7)
+    `).bind(crypto.randomUUID(), actor.name, actor.type, collection, id, JSON.stringify(current.value), now),
+  ])
+  return current.value
+}
+
 export async function readState(db) {
   const state = Object.fromEntries(COLLECTIONS.map((collection) => [collection, []]))
   const rows = await db.prepare('SELECT collection, data FROM records ORDER BY created_at ASC').all()

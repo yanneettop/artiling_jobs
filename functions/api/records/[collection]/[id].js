@@ -1,6 +1,7 @@
 import { authenticate, unauthorized } from '../../../_shared/auth.js'
 import {
   BOT_WRITABLE_COLLECTIONS,
+  deleteRecord,
   isCollection,
   json,
   readRecord,
@@ -32,8 +33,12 @@ export async function onRequestPut({ request, env, params }) {
   return result.conflict ? json({ error: 'Version conflict', current: result.current }, 409) : json(result)
 }
 
-export async function onRequestDelete({ request, env }) {
+export async function onRequestDelete({ request, env, params }) {
   const actor = await authenticate(request, env)
   if (!actor) return unauthorized(request)
-  return json({ error: 'Deletion is disabled. Archive the record instead.' }, 405)
+  if (actor.type !== 'human') return json({ error: 'Only a signed-in user can delete records' }, 403)
+  if (!isCollection(params.collection)) return json({ error: 'Unknown collection' }, 404)
+  if (params.collection !== 'documents') return json({ error: 'Deletion is disabled. Archive the record instead.' }, 405)
+  const deleted = await deleteRecord(env.DB, actor, params.collection, params.id)
+  return deleted ? json({ deleted: params.id }) : json({ error: 'Record not found' }, 404)
 }

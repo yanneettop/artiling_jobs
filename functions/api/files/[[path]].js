@@ -106,7 +106,7 @@ export async function uploadDocument(request, env, actor) {
   }, 201)
 }
 
-export async function downloadDocument(env, key) {
+export async function downloadDocument(env, key, forceDownload = false) {
   if (!env.DOCUMENTS) return storageUnavailable()
   if (!key.startsWith('documents/')) return json({ error: 'Not found' }, 404)
   const object = await env.DOCUMENTS.get(key)
@@ -114,7 +114,7 @@ export async function downloadDocument(env, key) {
 
   const contentType = object.httpMetadata?.contentType || 'application/octet-stream'
   const fileName = object.customMetadata?.file_name || key.split('/').pop()
-  const disposition = INLINE_TYPES.has(contentType) ? 'inline' : 'attachment'
+  const disposition = forceDownload || !INLINE_TYPES.has(contentType) ? 'attachment' : 'inline'
 
   return new Response(object.body, {
     headers: {
@@ -153,7 +153,7 @@ export async function onRequestPost({ request, env, params }) {
 export async function onRequestGet({ request, env, params }) {
   const { response } = await requireHuman(request, env, 'read')
   if (response) return response
-  return downloadDocument(env, pathOf(params))
+  return downloadDocument(env, pathOf(params), new URL(request.url).searchParams.get('download') === '1')
 }
 
 export async function onRequestDelete({ request, env, params }) {

@@ -13,7 +13,7 @@ type StoreApi = {
   syncError:string
   add:<K extends Collection>(collection:K, value:Database[K][number])=>void
   update:<K extends Collection>(collection:K, id:string, changes:Partial<Database[K][number]>)=>void
-  remove:<K extends Collection>(collection:K, id:string)=>void
+  remove:<K extends Collection>(collection:K, id:string)=>Promise<void>
   replace:(database:Database)=>void
   patchSettings:(changes:Partial<Database['settings']>)=>void
   log:(activity:Omit<Activity,'id'|'created_at'|'created_by'>)=>void
@@ -116,12 +116,15 @@ export function StoreProvider({children}:{children:ReactNode}) {
     db,syncStatus,syncError,
     add:(collection,value)=>mutate(current=>({...current,[collection]:[...(current[collection] as unknown[]),value]} as Database)),
     update:(collection,id,changes)=>mutate(current=>({...current,[collection]:(current[collection] as Array<{id:string}>).map(item=>item.id===id?{...item,...changes,updated_at:isoNow()}:item)} as Database)),
-    remove:(collection,id)=>mutate(current=>({...current,[collection]:(current[collection] as Array<{id:string}>).filter(item=>item.id!==id)} as Database)),
+    remove:async(collection,id)=>{
+      if(!needsBootstrap)await requestJson(`/api/records/${collection}/${encodeURIComponent(id)}`,{method:'DELETE'})
+      mutate(current=>({...current,[collection]:(current[collection] as Array<{id:string}>).filter(item=>item.id!==id)} as Database))
+    },
     replace:commit,
     patchSettings:(changes)=>mutate(current=>({...current,settings:{...current.settings,...changes}})),
     log:(activity)=>mutate(current=>({...current,activities:[{...activity,id:uid('activity'),created_at:isoNow(),created_by:'Ioannis'},...current.activities]})),
     refresh,
-  }),[db,syncStatus,syncError,mutate,commit,refresh])
+  }),[db,syncStatus,syncError,mutate,commit,refresh,needsBootstrap])
 
   if(syncStatus==='loading')return <main className="storage-gate"><SpinnerGap className="spin" size={30}/><h1>Connecting to Artiling Jobs</h1><p>Loading the shared Cloudflare workspace…</p></main>
   if(needsBootstrap)return <main className="storage-gate"><DatabaseIcon size={34}/><p className="eyebrow">One-time migration</p><h1>Move this browser’s data to Cloudflare</h1><p>This will copy the records currently stored in this browser into the shared D1 database. Grok and the web app will then work from the same source.</p>{syncError&&<div className="storage-error"><WarningCircle/> {syncError}</div>}<button className="button primary" onClick={()=>void bootstrap()} disabled={syncStatus==='saving'}>{syncStatus==='saving'?<><SpinnerGap className="spin"/> Moving data…</>:<><CloudArrowUp/> Move data securely</>}</button><small>No data is uploaded until you press this button.</small></main>

@@ -110,6 +110,13 @@ test('a type the browser should not render is sent as a download', async () => {
   assert.match(response.headers.get('content-disposition'), /^attachment;/)
 })
 
+test('an inline file can be explicitly downloaded', async () => {
+  const env = { DOCUMENTS: fakeBucket() }
+  const { key } = await (await uploadDocument(uploadRequest(pdf('Client quote.pdf')), env, actor)).json()
+  const response = await downloadDocument(env, key, true)
+  assert.match(response.headers.get('content-disposition'), /^attachment; filename\*=UTF-8''Client%20quote\.pdf$/)
+})
+
 test('reading outside the documents prefix is refused', async () => {
   const env = { DOCUMENTS: fakeBucket() }
   env.DOCUMENTS.objects.set('secrets/key.txt', { body: Buffer.from('x'), size: 1 })
